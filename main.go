@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 
@@ -51,6 +52,14 @@ func geraPalavras(r, s int) []string {
 	return nil
 }
 
+func geraVertices(palavras []string, size int) []grafo.Vertice {
+	vertices := make([]grafo.Vertice, 0, size)
+	for _, palavra := range palavras {
+		vertices = append(vertices, grafo.Vertice{Label: palavra})
+	}
+	return vertices
+}
+
 func main() {
 
 	fmt.Println("Insira o tamanho da palavra")
@@ -67,14 +76,21 @@ func main() {
 
 	palavras := geraPalavras(r, s)
 
-	vertices := []grafo.Vertice{}
-	for _, palavra := range palavras {
-		vertices = append(vertices, grafo.Vertice{Label: palavra})
-	}
-
-	graf := grafo.Grafo{
+	size := int(math.Pow(float64(r), float64(s)))
+	vertices := geraVertices(palavras, size)
+	g := grafo.Grafo{
 		Vertices: vertices,
 	}
-	graf.ImprimeVertices()
+
+	for _, verticeA := range g.Vertices {
+		for _, verticeB := range g.Vertices {
+			// se retirando primeiro simbolo de A e último de B temos mesma sequencia então cria aresta
+			if verticeA.Label[1:] == verticeB.Label[:len(verticeB.Label)-1] {
+				g.Arestas = append(g.Arestas, grafo.Aresta{Origem: verticeA, Destino: verticeB})
+			}
+		}
+	}
+
+	g.ImprimeVertices()
 
 }
