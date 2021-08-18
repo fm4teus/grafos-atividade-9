@@ -67,9 +67,6 @@ func main() {
 
 	palavras := geraPalavras(r, s)
 
-	fmt.Println("res", len(palavras))
-	fmt.Println("len", len(palavras))
-
 	vertices := []grafo.Vertice{}
 	for _, palavra := range palavras {
 		vertices = append(vertices, grafo.Vertice{Label: palavra})
