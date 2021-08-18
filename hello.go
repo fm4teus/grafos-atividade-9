@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 
@@ -30,21 +29,21 @@ func codifica(n int) string {
 	return string(rune('a' + n))
 }
 
-func geraPalavras(res []string, r, s int) []string {
+func geraPalavras(r, s int) []string {
 	if r > 1 {
-		palavras := geraPalavras(res, r-1, s)
-		var aux []string
-		copy(aux, palavras)
+		palavras := geraPalavras(r-1, s)
+		res := []string{}
 		for _, palavra := range palavras {
 			for j := 0; j < s; j++ {
-				aux = append(aux, fmt.Sprintf("%s%s", codifica(j), palavra))
+				res = append(res, fmt.Sprintf("%s%s", codifica(j), palavra))
 			}
 		}
-		return aux
+		return res
 
 	} else if r == 1 {
+		res := []string{}
 		for i := 0; i < s; i++ {
-			res[i] = codifica(i)
+			res = append(res, codifica(i))
 		}
 		return res
 	}
@@ -66,9 +65,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	size := int(math.Pow(float64(s), float64(r)))
-	res := make([]string, size)
-	palavras := geraPalavras(res, r, s)[:size]
+	palavras := geraPalavras(r, s)
 
 	fmt.Println("res", len(palavras))
 	fmt.Println("len", len(palavras))
