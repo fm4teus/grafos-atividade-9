@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-	"./grafo"
+	"github.com/yourbasic/graph"
 )
 
 func leitura() (int, error) {
@@ -52,14 +52,6 @@ func geraPalavras(r, s int) []string {
 	return nil
 }
 
-func geraVertices(palavras []string, size int) []grafo.Vertice {
-	vertices := make([]grafo.Vertice, 0, size)
-	for _, palavra := range palavras {
-		vertices = append(vertices, grafo.Vertice{Label: palavra})
-	}
-	return vertices
-}
-
 func main() {
 
 	fmt.Println("Insira o tamanho da palavra")
@@ -74,23 +66,28 @@ func main() {
 		fmt.Println(err)
 	}
 
-	palavras := geraPalavras(r, s)
+	palavras := geraPalavras(r-1, s)
 
 	size := int(math.Pow(float64(r), float64(s)))
-	vertices := geraVertices(palavras, size)
-	g := grafo.Grafo{
-		Vertices: vertices,
-	}
+	g := graph.New(size)
 
-	for _, verticeA := range g.Vertices {
-		for _, verticeB := range g.Vertices {
-			// se retirando primeiro simbolo de A e último de B temos mesma sequencia então cria aresta
-			if verticeA.Label[1:] == verticeB.Label[:len(verticeB.Label)-1] {
-				g.Arestas = append(g.Arestas, grafo.Aresta{Origem: verticeA, Destino: verticeB})
+	for indiceA, palavraA := range palavras {
+		fmt.Println(palavraA)
+		for indiceB, palavraB := range palavras {
+			// se retirando primeiro simbolo de A e último de B temos mesma sequencia então cria aresta A --> B
+			if palavraA[1:] == palavraB[:r-2] {
+				g.Add(indiceA, indiceB)
 			}
 		}
 	}
 
-	g.ImprimeVertices()
+	caminhoEuleriano, _ := graph.EulerDirected(g)
+
+	var deBrujin string
+	for _, indiceVertice := range caminhoEuleriano {
+		deBrujin = fmt.Sprintf("%s%s", deBrujin, palavras[indiceVertice][:1])
+	}
+
+	fmt.Println(deBrujin[:len(deBrujin)-1])
 
 }
