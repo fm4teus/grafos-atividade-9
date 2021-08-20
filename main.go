@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 
@@ -27,7 +26,7 @@ func leitura() (int, error) {
 }
 
 func codifica(n int) string {
-	return string(rune('a' + n))
+	return string(rune('0' + n))
 }
 
 func geraPalavras(r, s int) []string {
@@ -54,13 +53,13 @@ func geraPalavras(r, s int) []string {
 
 func main() {
 
-	fmt.Println("Insira o tamanho da palavra")
+	fmt.Print("Insira o tamanho da palavra: ")
 	r, err := leitura()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Insira o número de símbolos")
+	fmt.Print("Insira o número de símbolos: ")
 	s, err := leitura()
 	if err != nil {
 		fmt.Println(err)
@@ -68,11 +67,9 @@ func main() {
 
 	palavras := geraPalavras(r-1, s)
 
-	size := int(math.Pow(float64(r), float64(s)))
-	g := graph.New(size)
+	g := graph.New(len(palavras))
 
 	for indiceA, palavraA := range palavras {
-		fmt.Println(palavraA)
 		for indiceB, palavraB := range palavras {
 			// se retirando primeiro simbolo de A e último de B temos mesma sequencia então cria aresta A --> B
 			if palavraA[1:] == palavraB[:r-2] {
@@ -88,6 +85,6 @@ func main() {
 		deBrujin = fmt.Sprintf("%s%s", deBrujin, palavras[indiceVertice][:1])
 	}
 
-	fmt.Println(deBrujin[:len(deBrujin)-1])
+	fmt.Println("sequencia: ", deBrujin[:len(deBrujin)-1])
 
 }
