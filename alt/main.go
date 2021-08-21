@@ -32,6 +32,30 @@ func geraPalavras(r, s int) []string {
 	return nil
 }
 
+func geraGrafoDeBruijn(palavras []string, r int) *graph.Mutable {
+	g := graph.New(len(palavras))
+
+	for indiceA, palavraA := range palavras {
+		for indiceB, palavraB := range palavras {
+			// se retirando primeiro simbolo de A e último de B temos mesma sequencia então cria aresta A --> B
+			if palavraA[1:] == palavraB[:r-2] {
+				g.Add(indiceA, indiceB)
+			}
+		}
+	}
+
+	return g
+}
+
+func imprime(caminhoEuleriano []int, palavras []string) {
+	var deBrujin string
+	for _, indiceVertice := range caminhoEuleriano {
+		deBrujin = fmt.Sprintf("%s%s", deBrujin, palavras[indiceVertice][:1])
+	}
+	fmt.Println("sequencia: ", deBrujin[:len(deBrujin)-1])
+	fmt.Println("    ----    ")
+}
+
 type teste struct {
 	r int
 	s int
@@ -48,26 +72,12 @@ func main() {
 
 		palavras := geraPalavras(par.r-1, par.s)
 
-		g := graph.New(len(palavras))
-
-		for indiceA, palavraA := range palavras {
-			for indiceB, palavraB := range palavras {
-				// se retirando primeiro simbolo de A e último de B temos mesma sequencia então cria aresta A --> B
-				if palavraA[1:] == palavraB[:par.r-2] {
-					g.Add(indiceA, indiceB)
-				}
-			}
-		}
+		g := geraGrafoDeBruijn(palavras, par.r)
 
 		caminhoEuleriano, _ := graph.EulerDirected(g)
 
-		var deBrujin string
-		for _, indiceVertice := range caminhoEuleriano {
-			deBrujin = fmt.Sprintf("%s%s", deBrujin, palavras[indiceVertice][:1])
-		}
+		imprime(caminhoEuleriano, palavras)
 
-		fmt.Println("sequencia: ", deBrujin[:len(deBrujin)-1])
-		fmt.Println("    ----    ")
 	}
 
 }
